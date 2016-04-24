@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<title>HNMirror</title>
+<title>HNMirror </title>
 
 <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.js"></script> -->
 <script  type="text/javascript">
