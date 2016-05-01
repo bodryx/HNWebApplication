@@ -6,7 +6,7 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
    <bean id="configuration" class="net.ddns.hnmirror.config.Config">
-       <property name="ipAppSrv" value="192.168.1.200"/>
+       <property name="ipAppSrv" value="192.168.1.215"/>  <!-- srv:215, odin:200 -->
        <property name="portAppSrv" value="61616"/>
    </bean>
 
