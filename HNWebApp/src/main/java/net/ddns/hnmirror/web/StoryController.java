@@ -21,22 +21,22 @@ import net.ddns.hnmirror.service.impl.StoryServiceImpl;
 @Controller
 public class StoryController {
 	private int page = 1;
-	
+
 	public static String ipAppSrv;
 	public static int portAppSrv;
-	
+
 	public StoryController() {
-		 ApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
-		 Config config = (Config) context.getBean("configuration");
-		 ipAppSrv = config.getIpAppSrv();
-		 portAppSrv = config.getPortAppSrv();
+		ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+		Config config = (Config) context.getBean("configuration");
+		ipAppSrv = config.getIpAppSrv();
+		portAppSrv = config.getPortAppSrv();
 	}
-	
+
 	@RequestMapping("/index")
 	public String listStories(Model model) throws SQLException {
 		page = 1;
 		StoryServiceImpl storyServiceImpl = new StoryServiceImpl();
-		
+
 		model.addAttribute("stories", storyServiceImpl.listStory(page));
 		++page;
 		model.addAttribute("page", "more?p=" + page);
@@ -44,7 +44,7 @@ public class StoryController {
 		model.addAttribute("checkboxtitle", "checked='checked'");
 		model.addAttribute("checkboxurl", "checked='checked'");
 		model.addAttribute("checkboxtext", "checked='checked'");
-		
+
 		return "story";
 	}
 
@@ -52,7 +52,7 @@ public class StoryController {
 	public String askPage(Model model) throws SQLException {
 
 		StoryServiceImpl storyServiceImpl = new StoryServiceImpl();
-		
+
 		model.addAttribute("stories", storyServiceImpl.listStory(page));
 		++page;
 		model.addAttribute("page", "more?p=" + page);
@@ -60,86 +60,84 @@ public class StoryController {
 		model.addAttribute("checkboxtitle", "checked='checked'");
 		model.addAttribute("checkboxurl", "checked='checked'");
 		model.addAttribute("checkboxtext", "checked='checked'");
-		
+
 		return "story";
 	}
-	
-	
+
 	@RequestMapping("/search")
 	public ModelAndView search(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		page = 1;
 		String searchStr = request.getParameter("search");
-		
-		String searchBy  = request.getParameter("searchbyauthor");
+
+		String searchBy = request.getParameter("searchbyauthor");
 		searchBy = searchBy + request.getParameter("searchbytitle");
 		searchBy = searchBy + request.getParameter("searchbyurl");
 		searchBy = searchBy + request.getParameter("searchbytext");
-		
-		String queryString = request.getQueryString();	
-		
+
+		String queryString = request.getQueryString();
+
 		StoryServiceImpl storyServiceImpl = new StoryServiceImpl();
 		ModelAndView modelAndView = new ModelAndView("story");
 
 		modelAndView.addObject("search_res", "value='" + searchStr + "'");
-		if(searchBy.contains("author")) {
-			modelAndView.addObject("checkboxauthor",  "checked='checked'");
+		if (searchBy.contains("author")) {
+			modelAndView.addObject("checkboxauthor", "checked='checked'");
 		}
-		if(searchBy.contains("title")) {
-			modelAndView.addObject("checkboxtitle",  "checked='checked'");
+		if (searchBy.contains("title")) {
+			modelAndView.addObject("checkboxtitle", "checked='checked'");
 		}
-		if(searchBy.contains("url")) {
-			modelAndView.addObject("checkboxurl",  "checked='checked'");
+		if (searchBy.contains("url")) {
+			modelAndView.addObject("checkboxurl", "checked='checked'");
 		}
-		if(searchBy.contains("text")) {
-			modelAndView.addObject("checkboxtext",  "checked='checked'");
+		if (searchBy.contains("text")) {
+			modelAndView.addObject("checkboxtext", "checked='checked'");
 		}
-		
+
 		modelAndView.addObject("stories", storyServiceImpl.search(searchStr, searchBy, page));
 		++page;
 		modelAndView.addObject("page", "moresearch?" + queryString);
-		
+
 		return modelAndView;
 	}
 
 	@RequestMapping("/moresearch")
 	public ModelAndView moreSearch(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		String searchStr = request.getParameter("search");
-		
-		String searchBy  = request.getParameter("searchbyauthor");
+
+		String searchBy = request.getParameter("searchbyauthor");
 		searchBy = searchBy + request.getParameter("searchbytitle");
 		searchBy = searchBy + request.getParameter("searchbyurl");
 		searchBy = searchBy + request.getParameter("searchbytext");
-				
-		String queryString = request.getQueryString();	
-	
+
+		String queryString = request.getQueryString();
+
 		StoryServiceImpl storyServiceImpl = new StoryServiceImpl();
 		ModelAndView modelAndView = new ModelAndView("story");
 
 		modelAndView.addObject("search_res", "value='" + searchStr + "'");
-		if(searchBy.contains("author")) {
-			modelAndView.addObject("checkboxauthor",  "checked='checked'");
+		if (searchBy.contains("author")) {
+			modelAndView.addObject("checkboxauthor", "checked='checked'");
 		}
-		if(searchBy.contains("title")) {
-			modelAndView.addObject("checkboxtitle",  "checked='checked'");
+		if (searchBy.contains("title")) {
+			modelAndView.addObject("checkboxtitle", "checked='checked'");
 		}
-		if(searchBy.contains("url")) {
-			modelAndView.addObject("checkboxurl",  "checked='checked'");
+		if (searchBy.contains("url")) {
+			modelAndView.addObject("checkboxurl", "checked='checked'");
 		}
-		if(searchBy.contains("text")) {
-			modelAndView.addObject("checkboxtext",  "checked='checked'");
+		if (searchBy.contains("text")) {
+			modelAndView.addObject("checkboxtext", "checked='checked'");
 		}
-		
+
 		modelAndView.addObject("stories", storyServiceImpl.search(searchStr, searchBy, page));
 		++page;
 		modelAndView.addObject("page", "moresearch?" + queryString);
-		
+
 		return modelAndView;
 	}
-	
-	
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) {
 		return "redirect:/index";
