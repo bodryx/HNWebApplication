@@ -1,9 +1,8 @@
 package net.ddns.hnmirror.web;
 
 import java.io.IOException;
-import java.sql.SQLException;
-
 import javax.servlet.ServletException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +19,7 @@ import net.ddns.hnmirror.service.impl.StoryServiceImpl;
 
 @Controller
 public class StoryController {
-	private int page = 1;
+	private int page;
 
 	public static String ipAppSrv;
 	public static int portAppSrv;
@@ -30,29 +29,22 @@ public class StoryController {
 		Config config = (Config) context.getBean("configuration");
 		ipAppSrv = config.getIpAppSrv();
 		portAppSrv = config.getPortAppSrv();
+		page = 1;
 	}
 
 	@RequestMapping("/index")
-	public String listStories(Model model) throws SQLException {
+	public String firstPage(Model model) {
 		page = 1;
-		StoryServiceImpl storyServiceImpl = new StoryServiceImpl();
-
-		model.addAttribute("stories", storyServiceImpl.listStory(page));
-		++page;
-		model.addAttribute("page", "more?p=" + page);
-		model.addAttribute("checkboxauthor", "checked='checked'");
-		model.addAttribute("checkboxtitle", "checked='checked'");
-		model.addAttribute("checkboxurl", "checked='checked'");
-		model.addAttribute("checkboxtext", "checked='checked'");
-
-		return "story";
+		return pageOfStories(model);
 	}
 
 	@RequestMapping("/more")
-	public String askPage(Model model) throws SQLException {
+	public String nextPage(Model model) {
+		return pageOfStories(model);
+	}
 
+	public String pageOfStories(Model model) {
 		StoryServiceImpl storyServiceImpl = new StoryServiceImpl();
-
 		model.addAttribute("stories", storyServiceImpl.listStory(page));
 		++page;
 		model.addAttribute("page", "more?p=" + page);
@@ -62,49 +54,25 @@ public class StoryController {
 		model.addAttribute("checkboxtext", "checked='checked'");
 
 		return "story";
+
 	}
 
 	@RequestMapping("/search")
-	public ModelAndView search(HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView firstPageOfSearch(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		page = 1;
-		String searchStr = request.getParameter("search");
+		return pageOfSearch(request, response);
 
-		String searchBy = request.getParameter("searchbyauthor");
-		searchBy = searchBy + request.getParameter("searchbytitle");
-		searchBy = searchBy + request.getParameter("searchbyurl");
-		searchBy = searchBy + request.getParameter("searchbytext");
-
-		String queryString = request.getQueryString();
-
-		StoryServiceImpl storyServiceImpl = new StoryServiceImpl();
-		ModelAndView modelAndView = new ModelAndView("story");
-
-		modelAndView.addObject("search_res", "value='" + searchStr + "'");
-		if (searchBy.contains("author")) {
-			modelAndView.addObject("checkboxauthor", "checked='checked'");
-		}
-		if (searchBy.contains("title")) {
-			modelAndView.addObject("checkboxtitle", "checked='checked'");
-		}
-		if (searchBy.contains("url")) {
-			modelAndView.addObject("checkboxurl", "checked='checked'");
-		}
-		if (searchBy.contains("text")) {
-			modelAndView.addObject("checkboxtext", "checked='checked'");
-		}
-
-		modelAndView.addObject("stories", storyServiceImpl.search(searchStr, searchBy, page));
-		++page;
-		modelAndView.addObject("page", "moresearch?" + queryString);
-
-		return modelAndView;
 	}
 
 	@RequestMapping("/moresearch")
-	public ModelAndView moreSearch(HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView nextPageOfSearch(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		return pageOfSearch(request, response);
+	}
 
+	public ModelAndView pageOfSearch(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String searchStr = request.getParameter("search");
 
 		String searchBy = request.getParameter("searchbyauthor");

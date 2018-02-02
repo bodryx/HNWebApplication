@@ -38,7 +38,7 @@ public class Receiver {
 	public List<Story> receive(int tokenId) {
 		List<Story> stories = new ArrayList<Story>();
 		try {
-			factory = new ActiveMQConnectionFactory(brokerUrl); // ActiveMQConnection.DEFAULT_BROKER_URL);
+			factory = new ActiveMQConnectionFactory(brokerUrl); 
 			connection = factory.createConnection();
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			destination = session.createQueue(queueName);
@@ -52,13 +52,13 @@ public class Receiver {
 					Token token = (Token) msg0.getObject();
 
 					stories = handler.handleToken(tokenId, token);
-					
+				
 					consumer.close();
 					session.close();
 					connection.close();
 					return stories;
 				}
-
+				
 			}
 
 			// Thread.sleep(timeReceive);
